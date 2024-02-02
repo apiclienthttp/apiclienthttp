@@ -1,0 +1,55 @@
+# -- Poetry --
+[tool.poetry]
+name = "APIClientHTTP"
+version = "3.0.1"
+description = "Client for sync/async query HTTP API Services"
+readme = "README.md"
+repository = "https://github.com/apiclienthttp/apiclienthttp"
+authors = [
+    "Igor Voropaev <snakework10@gmail.com>"
+]
+packages = [{ include = "apiclienthttp" }]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+httpx = "^0.21.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.flake8]
+max-line-length = 135
+exclude = ["__submodules__", ".git"]
+max-returns-amount = 10
+max-parameters-amount = 15
+per-file-ignores = ["constants.py:N801"]
+
+# -- MyPy --
+[tool.mypy]
+ignore_missing_imports = true
+cache_dir = "/dev/null"
+
+# -- Vulture --
+[tool.vulture]
+exclude = [".vscode/", "__samples__/"]
+
+# -- PyLint --
+[tool.pylint.messages_control]
+disable = [
+    "missing-module-docstring",
+    "missing-class-docstring",
+    "missing-function-docstring",
+    "too-few-public-methods",
+    "import-error",
+]
+
+[tool.pylint.format]
+max-line-length = 135
+
+# -- PyTest --
+[tool.coverage.run]
+omit = ["tests/*"]
+
+[tool.coverage.report]
+exclude_lines = ["pragma: no cover", "def __repr__", "def __str__"]
