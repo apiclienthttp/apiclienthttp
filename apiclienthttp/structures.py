@@ -61,7 +61,7 @@ class Options:
     bypass: t.Dict[str, t.Any] = f(default_factory=dict)
 
     @classmethod
-    def create(cls, full_response: bool = None, ok_codes: t.Union[int, t.List[int], t.Tuple[int, ...]] = None, **bypass) -> Options:
+    def create(cls, full_response: bool | None = None, ok_codes: int | list[int] | tuple[int, ...] | None = None, **bypass) -> Options:
         result = cls(
             bypass=bypass,
             ok_codes=cls._parse_code(ok_codes)
@@ -73,7 +73,7 @@ class Options:
         return result
 
     @staticmethod
-    def _parse_code(code: t.Union[int, t.List[int], t.Tuple[int, ...], None]) -> t.List[int]:
+    def _parse_code(code: int | list[int] | tuple[int, ...] | None) -> t.List[int]:
         if isinstance(code, int):
             return [code]
         if isinstance(code, (list, tuple)):

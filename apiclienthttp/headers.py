@@ -33,7 +33,7 @@ class RestHeaders:
     def keys(self) -> list[str]:
         return [h.name for h in self.__headers__]
 
-    def get(self, name: str, default: str = None) -> t.Optional[str]:
+    def get(self, name: str, default: str | None = None) -> t.Optional[str]:
         if (result := next(self._find(name), None)) is None:
             return default
         return result.value

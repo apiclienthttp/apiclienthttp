@@ -4,7 +4,7 @@ import typing as t
 from .structures import Endpoint
 from .utils import trim, is_valid_url
 
-TEndpoint = t.Union[t.Dict[str, str], t.List[str], t.Tuple[str, str], str]
+EndpointType = dict[str, str] | list[str] | tuple[str, str] | str
 
 
 class RestURL:
@@ -13,14 +13,14 @@ class RestURL:
 
     __endpoints__: list[Endpoint]
 
-    def __init__(self, address: str = None, *, endpoints: TEndpoint = None, strict: bool = False):
+    def __init__(self, address: str | None = None, *, endpoints: EndpointType | None = None, strict: bool = False):
         self.strict = strict
         self.__endpoints__ = Endpoint.parse(endpoints)
 
         if is_valid_url(address):
             self.address = trim(t.cast(str, address))
 
-    def __call__(self, address: str, *uri_params: t.Union[str, int], **kwargs: t.Union[str, int]) -> str:
+    def __call__(self, address: str, *uri_params: str | int, **kwargs: str | int) -> str:
 
         if not is_valid_url(address):
             address = self.url_for(address, *uri_params)
@@ -58,7 +58,7 @@ class RestURL:
             raise ValueError(f"Endpoint '{name}' doesn't exists")
         return result
 
-    def add_endpoints(self, endpoints: TEndpoint) -> None:
+    def add_endpoints(self, endpoints: EndpointType) -> None:
         for endpoint in Endpoint.parse(endpoints):
             if (matched := next(self._find(endpoint.name), None)) is None:
                 return self.__endpoints__.append(endpoint)
