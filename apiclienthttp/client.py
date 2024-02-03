@@ -60,10 +60,10 @@ class RestClient(BaseRestClient):
     def __call__(self,
                  method,
                  *address,
-                 params: dict[str, t.Any] = None,
-                 json: t.Union[dict, list] = None,
+                 params: dict[str, t.Any] | None = None,
+                 json: dict | list | None = None,
                  data: t.Any = None,
-                 headers: dict[str, str] = None,
+                 headers: dict[str, str] | None = None,
                  **opts):
         if len(address) == 0:
             raise ValueError("Address not set")
@@ -99,10 +99,10 @@ class AsyncRestClient(BaseRestClient):
     async def __call__(self,
                        method,
                        *address,
-                       params: dict[str, t.Any] = None,
-                       json: t.Union[dict, list] = None,
+                       params: dict[str, t.Any] | None = None,
+                       json: dict | list | None = None,
                        data: t.Any = None,
-                       headers: dict[str, str] = None,
+                       headers: dict[str, str] | None = None,
                        **opts):
         if len(address) == 0:
             raise ValueError("Address not set")

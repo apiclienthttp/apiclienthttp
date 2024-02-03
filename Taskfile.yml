@@ -1,0 +1,68 @@
+version: "3"
+
+silent: true
+
+vars:
+  FLAKE8_ENABLE: "{{ .FLAKE8_ENABLE | default true }}"
+  MYPY_ENABLE: "{{ .MYPY_ENABLE | default true }}"
+  PYLINT_ENABLE: "{{ .PYLINT_ENABLE | default true }}"
+  VULTURE_ENABLE: "{{ .VULTURE_ENABLE | default true }}"
+
+  ENVIRONMENT: '{{ .ENVIRONMENT | default "release" }}'
+
+tasks:
+  default:
+    deps:
+      - info
+
+  info:
+    desc: Prints application info
+    cmds:
+      - echo "---"
+      - poetry version
+      - echo "---"
+
+  lint:
+    desc: Linters for application cleanup
+    cmds:
+      - task: lint-flake8
+      - task: lint-mypy
+      - task: lint-pylint
+      - task: lint-vulture
+  lint-flake8:
+    desc: Linters for application cleanup
+    cmds:
+      - echo "-- lint-flake8 (enabled={{ .FLAKE8_ENABLE }}) --"
+      - '{{ if eq .FLAKE8_ENABLE "true" }} pflake8 {{ end }}'
+  lint-mypy:
+    desc: Linters for application cleanup
+    cmds:
+      - echo "-- lint-mypy (enabled={{ .MYPY_ENABLE }}) --"
+      - '{{ if eq .MYPY_ENABLE "true" }} mypy . {{ end }}'
+  lint-pylint:
+    desc: Linters for application cleanup
+    cmds:
+      - echo "-- lint-pylint (enabled={{ .PYLINT_ENABLE }}) --"
+      - '{{ if eq .PYLINT_ENABLE "true" }} pylint */ {{ end }}'
+  lint-vulture:
+    desc: Linters for application cleanup
+    cmds:
+      - echo "-- lint-vulture (enabled={{ .VULTURE_ENABLE }}) --"
+      - '{{ if eq .VULTURE_ENABLE "true" }} vulture . .vulture-whitelist.cfg {{ end }}'
+
+  # Deps
+  deps:
+    desc: Обновление зависимостей
+    cmds:
+      - poetry lock {{ if eq .FROZEN "true" }} --no-update {{ end }}
+  deps-install:
+    cmds:
+      - poetry install --no-root --only {{ .GROUPS }}
+    vars:
+      GROUPS:
+        sh: case "{{ .ENVIRONMENT }}" in
+          "develop" ) echo "main,tests,linter,dev" ;;
+          "linting" ) echo "main,linter" ;;
+          "testing" ) echo "main,tests" ;;
+          * ) echo "main" ;;
+          esac
