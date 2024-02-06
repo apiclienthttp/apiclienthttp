@@ -1,6 +1,6 @@
 # -- Poetry --
 [tool.poetry]
-name = "APIClientHTTP"
+name = "api-client-http"
 version = "1.0.0"
 description = "Client for sync/async query HTTP API Services"
 readme = "README.md"

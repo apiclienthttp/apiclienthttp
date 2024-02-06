@@ -52,7 +52,7 @@ tasks:
 
   # Deps
   deps:
-    desc: Обновление зависимостей
+    desc: Update dependencies
     cmds:
       - poetry lock {{ if eq .FROZEN "true" }} --no-update {{ end }}
   deps-install:
@@ -66,3 +66,13 @@ tasks:
           "testing" ) echo "main,tests" ;;
           * ) echo "main" ;;
           esac
+
+  build:
+    desc: Project build
+    cmds:
+      - poetry build -n
+
+  publish:
+    desc: Publish package to PyPI
+    cmds:
+      - poetry publish
