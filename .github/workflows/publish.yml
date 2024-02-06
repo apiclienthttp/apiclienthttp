@@ -1,0 +1,44 @@
+name: Publish
+
+on:
+  push:
+    tags:
+      - "*.*.*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python v3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Install task
+        uses: pnorton5432/setup-task@v1.0.0
+        with:
+          task-version: 3.29.1
+      - name: Install poetry
+        uses: snk-devops/action.poetry.install@master
+        with:
+          os: ubuntu
+          python-version: ${{ matrix.python-version }}
+      - name: Build project
+        run: task build
+      - name: Create Release
+        uses: action/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          body: |
+            Changes in this Release
+            - First Change
+            - Second Change
+          draft: false
+          prerelease: false
+      - name: Publish
+        env:
+          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
+        run: task publish
