@@ -29,7 +29,7 @@ flake8-bandit = "^4.1.1"
 pyproject-flake8 = "^6.0.0"
 pep8-naming = "^0.13.3"
 mypy = "^1.4.1"
-pylint = "^2.17.4"
+pylint = ">=2.17.4,<4.0.0"
 vulture = "^2.7.0"
 
 [build-system]
