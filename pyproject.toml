@@ -10,7 +10,7 @@ packages = [{ include = "apiclienthttp" }]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-httpx = "^0.21.0"
+httpx = ">=0.21,<0.28"
 
 [tool.poetry.group.linter.dependencies]
 flake8 = "^6.0.0"
