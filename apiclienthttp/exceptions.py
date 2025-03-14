@@ -1,9 +1,6 @@
-from httpx import TimeoutException, NetworkError
+from httpx import NetworkError, TimeoutException
 
-__all__ = [
-    'TimeoutException',
-    'NetworkError'
-]
+__all__ = ["NetworkError", "TimeoutException"]
 
 
 class RestQueryError(Exception):
@@ -16,7 +13,7 @@ class RestQueryError(Exception):
         self.code = code if code is not None else 0
 
     def __str__(self):
-        return f'{self.name} Error: {self.message} ({self.code})'
+        return f"{self.name} Error: {self.message} ({self.code})"
 
     @property
     def message(self):

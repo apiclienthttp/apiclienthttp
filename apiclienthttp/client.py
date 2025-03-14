@@ -1,16 +1,18 @@
 from __future__ import annotations
+
 import typing as t
 
 from json import dumps
 from types import MappingProxyType
+
 import httpx
 
-from .structures import Options
-from .response import RestResponse, ErrorResponse
-from .headers import RestHeaders
-from .urls import RestURL
-from .exceptions import RestQueryError, TimeoutException, NetworkError
 from .constants import CUSTOM_ERROR
+from .exceptions import NetworkError, RestQueryError, TimeoutException
+from .headers import RestHeaders
+from .response import ErrorResponse, RestResponse
+from .structures import Options
+from .urls import RestURL
 
 
 class BaseRestClient:
@@ -18,18 +20,18 @@ class BaseRestClient:
 
     def __init__(self, address=None, endpoints=None, headers=None, strict=False, **kwargs):
         self.url = RestURL(address, endpoints=endpoints, strict=strict)
-        self.headers = RestHeaders(**headers) if isinstance(headers, (dict, MappingProxyType)) else RestHeaders()
+        self.headers = RestHeaders(**headers) if isinstance(headers, dict | MappingProxyType) else RestHeaders()
         self.options = Options.create(**kwargs)
 
     def output(self, response: RestResponse, options: Options):
         if not response.is_ok(options.ok_codes):
             raise RestQueryError(
                 self.parse_response_error(response),
-                name=getattr(self, 'name', type(self).__name__),
+                name=getattr(self, "name", type(self).__name__),
                 code=response.status_code,
             )
 
-        if options.full_response or int(response.headers.get('Content-Length', '0')) <= 1:
+        if options.full_response or int(response.headers.get("Content-Length", "0")) <= 1:
             return response
 
         return response.content
@@ -46,10 +48,10 @@ class BaseRestClient:
             return content
 
         if isinstance(content, dict):
-            if content.get('message'):
-                return content['message']
-            if content.get('error'):
-                return content['error']
+            if content.get("message"):
+                return content["message"]
+            if content.get("error"):
+                return content["error"]
 
         return response.text
 
@@ -57,14 +59,16 @@ class BaseRestClient:
 class RestClient(BaseRestClient):
     name: str
 
-    def __call__(self,
-                 method,
-                 *address,
-                 params: dict[str, t.Any] | None = None,
-                 json: dict | list | None = None,
-                 data: t.Any = None,
-                 headers: dict[str, str] | None = None,
-                 **opts):
+    def __call__(
+        self,
+        method,
+        *address,
+        params: dict[str, t.Any] | None = None,
+        json: dict | list | None = None,
+        data: t.Any = None,
+        headers: dict[str, str] | None = None,
+        **opts,
+    ):
         if len(address) == 0:
             raise ValueError("Address not set")
 
@@ -78,9 +82,9 @@ class RestClient(BaseRestClient):
                 url=self.url(*address, **params),
                 headers=self.headers(**headers),
                 data=self._extract_data(data, json),
-                options=options
+                options=options,
             ),
-            options
+            options,
         )
 
     @staticmethod
@@ -96,14 +100,16 @@ class RestClient(BaseRestClient):
 class AsyncRestClient(BaseRestClient):
     name: str
 
-    async def __call__(self,
-                       method,
-                       *address,
-                       params: dict[str, t.Any] | None = None,
-                       json: dict | list | None = None,
-                       data: t.Any = None,
-                       headers: dict[str, str] | None = None,
-                       **opts):
+    async def __call__(
+        self,
+        method,
+        *address,
+        params: dict[str, t.Any] | None = None,
+        json: dict | list | None = None,
+        data: t.Any = None,
+        headers: dict[str, str] | None = None,
+        **opts,
+    ):
         if len(address) == 0:
             raise ValueError("Address not set")
 
@@ -117,9 +123,9 @@ class AsyncRestClient(BaseRestClient):
                 url=self.url(*address, **params),
                 headers=self.headers(**headers),
                 data=self._extract_data(data, json),
-                options=options
+                options=options,
             ),
-            options
+            options,
         )
 
     @staticmethod

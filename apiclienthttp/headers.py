@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 import typing as t
 
 from .structures import Header
@@ -33,7 +34,7 @@ class RestHeaders:
     def keys(self) -> list[str]:
         return [h.name for h in self.__headers__]
 
-    def get(self, name: str, default: str | None = None) -> t.Optional[str]:
+    def get(self, name: str, default: str | None = None) -> str | None:
         if (result := next(self._find(name), None)) is None:
             return default
         return result.value

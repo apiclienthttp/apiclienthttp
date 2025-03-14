@@ -61,3 +61,16 @@ response = await client.get('query', '123', auth=TokenAuth(auth_respone['access_
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
+
+## Changelog
+
+### v1.1.0
+
+- Updated minimal Python version to `3.11`
+- Update `httpx`: `0.21` -> `0.28`
+- Used `[project]` section in `pyproject.toml`
+- Used `ruff` as default linter
+
+### v1.0.0
+
+- First app version

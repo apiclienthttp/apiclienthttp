@@ -12,8 +12,8 @@ class RestResponse(BaseResponse):
     def __init__(self, response):
         self._raw = response
 
-        if not isinstance(response, (Response, ErrorResponse)):
-            raise ValueError(f'Responce argument must be instance of {Response}')
+        if not isinstance(response, Response | ErrorResponse):
+            raise ValueError(f"Responce argument must be instance of {Response}")  # noqa: TRY004
 
         self._headers = RestHeaders(**dict(response.headers))
 
@@ -34,7 +34,7 @@ class RestResponse(BaseResponse):
 
     @property
     def content(self):
-        if self.headers.get('content-type', '').find('application/json') != -1:
+        if self.headers.get("content-type", "").find("application/json") != -1:
             return self.json()
 
         return self.text
@@ -60,13 +60,12 @@ class RestResponse(BaseResponse):
 
 
 class ErrorResponse(BaseResponse):
-
     def __init__(self, url, *_, **kwargs):
         self.url = url
-        self.headers = RestHeaders(**kwargs.get('headers', {}))
-        self.status_code = kwargs.get('status_code', None)
-        self._text = kwargs.get('text', None)
-        self._json = kwargs.get('json', None)
+        self.headers = RestHeaders(**kwargs.get("headers", {}))
+        self.status_code = kwargs.get("status_code")
+        self._text = kwargs.get("text")
+        self._json = kwargs.get("json")
 
     def json(self):
         if self._json is not None:

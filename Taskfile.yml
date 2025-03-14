@@ -3,9 +3,8 @@ version: "3"
 silent: true
 
 vars:
-  FLAKE8_ENABLE: "{{ .FLAKE8_ENABLE | default true }}"
+  RUFF_ENABLE: "{{ .RUFF_ENABLE | default true }}"
   MYPY_ENABLE: "{{ .MYPY_ENABLE | default true }}"
-  PYLINT_ENABLE: "{{ .PYLINT_ENABLE | default true }}"
   VULTURE_ENABLE: "{{ .VULTURE_ENABLE | default true }}"
 
   ENVIRONMENT: '{{ .ENVIRONMENT | default "release" }}'
@@ -25,25 +24,20 @@ tasks:
   lint:
     desc: Linters for application cleanup
     cmds:
-      - task: lint-flake8
+      - task: lint-ruff
       - task: lint-mypy
-      - task: lint-pylint
       - task: lint-vulture
-  lint-flake8:
+  lint-ruff:
     desc: Linters for application cleanup
     cmds:
-      - echo "-- lint-flake8 (enabled={{ .FLAKE8_ENABLE }}) --"
-      - '{{ if eq .FLAKE8_ENABLE "true" }} pflake8 {{ end }}'
+      - echo "-- lint-ruff (enabled={{ .RUFF_ENABLE }}) --"
+      - '{{ if eq .RUFF_ENABLE "true" }} ruff check {{ .CLI_ARGS }} . {{ end }}'
   lint-mypy:
     desc: Linters for application cleanup
     cmds:
       - echo "-- lint-mypy (enabled={{ .MYPY_ENABLE }}) --"
-      - '{{ if eq .MYPY_ENABLE "true" }} mypy . {{ end }}'
-  lint-pylint:
-    desc: Linters for application cleanup
-    cmds:
-      - echo "-- lint-pylint (enabled={{ .PYLINT_ENABLE }}) --"
-      - '{{ if eq .PYLINT_ENABLE "true" }} pylint */ {{ end }}'
+      - '{{ if eq .MYPY_ENABLE "true" }} poetry install --only linter --no-root {{ end }}'
+      - '{{ if eq .MYPY_ENABLE "true" }} mypy --show-error-codes . {{ end }}'
   lint-vulture:
     desc: Linters for application cleanup
     cmds:
@@ -52,9 +46,8 @@ tasks:
 
   # Deps
   deps:
-    desc: Update dependencies
-    cmds:
-      - poetry lock {{ if eq .FROZEN "true" }} --no-update {{ end }}
+    desc: Обновление зависимостей
+    cmd: poetry lock {{ if eq .FROZEN "false" }} --regenerate {{ end }}
   deps-install:
     cmds:
       - poetry install --no-root --only {{ .GROUPS }}

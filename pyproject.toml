@@ -1,69 +1,133 @@
-# -- Poetry --
-[tool.poetry]
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[project]
 name = "api-client-http"
-version = "1.0.0"
+version = "1.1.0"
 description = "Client for sync/async query HTTP API Services"
 readme = "README.md"
+requires-python = ">=3.11,<4.0"
+authors = [{ name = "Igor Voropaev", email = "snakework10@gmail.com" }]
+dependencies = ["httpx ~= 0.28"]
+
+[project.urls]
 repository = "https://github.com/apiclienthttp/apiclienthttp"
-authors = ["Igor Voropaev <snakework10@gmail.com>"]
+
+# -- Poetry --
+[tool.poetry]
 packages = [{ include = "apiclienthttp" }]
 
 [tool.poetry.dependencies]
-python = "^3.10"
-httpx = "^0.21.0"
+
 
 [tool.poetry.group.linter.dependencies]
-flake8 = "^6.0.0"
-flake8-bugbear = "^23.7.10"
-flake8-builtins = "^2.1.0"
-flake8-comprehensions = "^3.14.0"
-flake8-debugger = "^4.1.2"
-flake8-eradicate = "^1.5.0"
-flake8-fixme = "^1.1.1"
-flake8-mutable = "^1.2.0"
-flake8-pie = "^0.16.0"
-flake8-print = "^5.0.0"
-flake8-variables-names = "^0.0.6"
-flake8-functions = "^0.0.8"
-flake8-bandit = "^4.1.1"
-pyproject-flake8 = "^6.0.0"
-pep8-naming = "^0.13.3"
-mypy = "^1.4.1"
-pylint = "^2.17.4"
-vulture = "^2.7.0"
+ruff = "^0.9.1"
+mypy = "^1.14.1"
+vulture = "^2.14.0"
 
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+# -- ruff --
+[tool.ruff]
+line-length = 135
+preview = true
 
-[tool.flake8]
-max-line-length = 135
-exclude = ["__submodules__", ".git"]
-max-returns-amount = 10
-max-parameters-amount = 15
-per-file-ignores = ["constants.py:N801"]
+[tool.ruff.lint]
+select = [
+    "F",
+    "E",
+    "W",
+    "C90",
+    "I",
+    "N",
+    "UP",
+    "YTT",
+    "ASYNC",
+    "ASYNC1",
+    "S",
+    "BLE",
+    "B",
+    "A",
+    "COM",
+    "C4",
+    "DTZ",
+    "T10",
+    "DJ",
+    "EXE",
+    "ISC",
+    "ICN",
+    "G",
+    "INP",
+    "PIE",
+    "T20",
+    "PYI",
+    "PT",
+    "Q",
+    "RSE",
+    "RET",
+    "SLF",
+    "SLOT",
+    "SIM",
+    "TID",
+    "INT",
+    "ARG",
+    "PTH",
+    "TD",
+    "FIX",
+    "ERA",
+    "PD",
+    "PGH",
+    "PL",
+    "TRY",
+    "FLY",
+    "NPY",
+    "AIR",
+    "PERF",
+    "FURB",
+    "LOG",
+    "RUF",
+]
+ignore = [
+    "COM812",
+    "ISC001",
+    "TRY003",
+    "PT013",
+    "TID252",
+    "RUF001",
+    "RUF002",
+    "RUF003",
+
+]
+
+[tool.ruff.lint.isort]
+section-order = [
+    "future",
+    "typings",
+    "standard-library",
+    "third-party",
+    "first-party",
+    "local-folder",
+]
+
+[tool.ruff.lint.isort.sections]
+"typings" = ['typing', 'typing_extensions']
+
+[tool.ruff.lint.pylint]
+max-args = 15
+max-returns = 10
+max-branches = 30
 
 # -- MyPy --
 [tool.mypy]
 ignore_missing_imports = true
-cache_dir = "/dev/null"
+exclude = ["__samples__"]
+
+[[tool.mypy.overrides]]
+module = "users.api_v1"
+disable_error_code = "override"
 
 # -- Vulture --
 [tool.vulture]
 exclude = [".vscode/", "__samples__/"]
-
-# -- PyLint --
-[tool.pylint.messages_control]
-disable = [
-    "missing-module-docstring",
-    "missing-class-docstring",
-    "missing-function-docstring",
-    "too-few-public-methods",
-    "import-error",
-]
-
-[tool.pylint.format]
-max-line-length = 135
 
 # -- PyTest --
 [tool.coverage.run]

@@ -1,5 +1,4 @@
 from __future__ import annotations
-import typing as t
 
 from .constants import HTTP_PATTERN
 
@@ -12,7 +11,7 @@ def trim(url: str) -> str:
     return url
 
 
-def is_valid_url(url: t.Optional[str]) -> bool:
+def is_valid_url(url: str | None) -> bool:
     if not isinstance(url, str):
         return False
     return bool(HTTP_PATTERN.match(url))

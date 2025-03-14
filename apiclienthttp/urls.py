@@ -1,15 +1,18 @@
 from __future__ import annotations
+
 import typing as t
 
+from itertools import starmap
+
 from .structures import Endpoint
-from .utils import trim, is_valid_url
+from .utils import is_valid_url, trim
 
 EndpointType = dict[str, str] | list[str] | tuple[str, str] | str
 
 
 class RestURL:
     strict: bool
-    address: str = ''
+    address: str = ""
 
     __endpoints__: list[Endpoint]
 
@@ -21,26 +24,25 @@ class RestURL:
             self.address = trim(t.cast(str, address))
 
     def __call__(self, address: str, *uri_params: str | int, **kwargs: str | int) -> str:
-
         if not is_valid_url(address):
             address = self.url_for(address, *uri_params)
 
         return self.set_params(address, **kwargs)
 
-    def set_params(self, url: str, **params: t.Union[str, int]) -> str:
+    def set_params(self, url: str, **params: str | int) -> str:
         if not params:
             return url
 
-        return f"{url}?{'&'.join(self.build_param(key, value) for key, value in params.items())}"
+        return f"{url}?{'&'.join(starmap(self.build_param, params.items()))}"
 
     @staticmethod
     def build_param(key, value):
         if isinstance(value, list):
-            return '&'.join(('{}={}'.format(key, v) for v in value))  # pylint: disable=consider-using-f-string
+            return "&".join(f"{key}={v}" for v in value)  # pylint: disable=consider-using-f-string
 
-        return f'{key}={value}'
+        return f"{key}={value}"
 
-    def url_for(self, endpoint: str, *uri_params: t.Union[str, int]) -> str:
+    def url_for(self, endpoint: str, *uri_params: str | int) -> str:
         if is_valid_url(target := self.get_endpoint(endpoint).uri.format(*uri_params)):
             return target
 
