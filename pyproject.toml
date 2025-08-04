@@ -22,7 +22,7 @@ packages = [{ include = "apiclienthttp" }]
 
 
 [tool.poetry.group.linter.dependencies]
-ruff = "^0.9.1"
+ruff = "^0.12.7"
 mypy = "^1.14.1"
 vulture = "^2.14.0"
 
